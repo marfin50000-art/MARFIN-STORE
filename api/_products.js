@@ -10,8 +10,6 @@ module.exports = {
   "HEX BLADE": 6,
   "MIGUL PRO": 11,
   "ZYTRON": 8,
-  "BOT GUIL GLORY": 2,
-  "DELTA PROXY": 13,
   "ZOLAM": 20,
   "PHANTOM": 5,
   "ST MODS KERNEL": 10,
@@ -25,6 +23,6 @@ module.exports = {
   "PATO TEAM BLUE": 12,
   "RAPID CORE": 5,
   "DRIP CLIENT ROOT": 18,
-  "DRIP CLIENT WIRE": 8,
+  "DRIP CLIENT WIRE": 10,
   "VORTEX VIP": 10
 };
