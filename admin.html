@@ -1,1 +1,117 @@
-<!doctype html><html lang="id"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin MARFIN STORE</title><style>body{margin:0;background:#100820;color:#f1eaff;font:15px system-ui;padding:20px}.wrap{max-width:760px;margin:auto}h1{color:#c49aff}.card{background:#1b1033;border:1px solid #3a2766;border-radius:14px;padding:16px;margin:12px 0}input,button{padding:12px;border-radius:9px;border:1px solid #60438e;background:#261747;color:white}button{cursor:pointer;margin:4px}.ok{background:#176b49}.no{background:#8b2945}.muted{color:#b9a9d5}</style><div class="wrap"><h1>MARFIN STORE — ADMIN</h1><section id="login" class="card"><h3>Login Admin</h3><input id="pw" type="password" placeholder="Password admin"><button onclick="login()">MASUK</button><p id="msg"></p></section><section id="panel" hidden><button onclick="load()">MUAT ULANG PESANAN</button><div id="orders"></div></section></div><script>async function login(){let r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('pw').value})}),j=await r.json();document.getElementById('msg').textContent=j.error||'';if(r.ok){document.getElementById('login').hidden=true;document.getElementById('panel').hidden=false;load()}}async function load(){let r=await fetch('/api/admin/orders'),j=await r.json();if(!r.ok){document.getElementById('orders').textContent=j.error;return}document.getElementById('orders').innerHTML=j.orders.map(o=>`<div class="card"><b>${esc(o.id)} — ${esc(o.product)}</b><p>${esc(o.item)} × ${o.quantity} | ${esc(o.payment)} | Rp ${Number(o.total).toLocaleString('id-ID')}</p><p>Pembeli: ${esc(o.name)} | WA: ${esc(o.whatsapp)}</p><p>Status: <b>${esc(o.status)}</b></p>${o.status==='pending'?`<button class="ok" onclick="decide('${o.id}','accept')">TERIMA PESANAN</button><button class="no" onclick="decide('${o.id}','reject')">TOLAK PESANAN</button>`:''}</div>`).join('')||'<p class="muted">Belum ada pesanan.</p>'}async function decide(id,action){if(!confirm(action==='accept'?'Terima pesanan dan kurangi stok?':'Tolak pesanan?'))return;let r=await fetch('/api/admin/decision',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,action})}),j=await r.json();alert(j.error||'Berhasil');load()}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</script></html>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin MARFIN STORE</title>
+<style>
+body{margin:0;background:#100820;color:#f1eaff;font:15px system-ui;padding:20px}
+.wrap{max-width:760px;margin:auto}
+h1{color:#c49aff}
+.card{background:#1b1033;border:1px solid #3a2766;border-radius:14px;padding:16px;margin:12px 0}
+input,button{padding:12px;border-radius:9px;border:1px solid #60438e;background:#261747;color:white;font:inherit}
+input{width:100%;box-sizing:border-box;margin-bottom:10px}
+button{cursor:pointer;margin:4px}
+button:disabled{opacity:.5;cursor:wait}
+.ok{background:#176b49}.no{background:#8b2945}
+.muted{color:#b9a9d5}
+#msg{color:#ff9ab0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>MARFIN STORE — ADMIN</h1>
+
+<section id="login" class="card">
+<h3>Login Admin</h3>
+<form id="loginForm">
+<input id="pw" type="password" placeholder="Password admin" required>
+<button id="loginBtn" type="submit">MASUK</button>
+</form>
+<p id="msg"></p>
+</section>
+
+<section id="panel" hidden>
+<button onclick="load()">MUAT ULANG PESANAN</button>
+<div id="orders"></div>
+</section>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+$('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const btn = $('loginBtn');
+  btn.disabled = true;
+  $('msg').textContent = 'Sedang masuk...';
+
+  try {
+    const r = await fetch('/api/admin/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:$('pw').value})
+    });
+    const j = await r.json();
+
+    if(!r.ok) throw new Error(j.error || 'Login gagal');
+
+    $('login').hidden = true;
+    $('panel').hidden = false;
+    $('msg').textContent = '';
+    await load();
+  } catch(err) {
+    $('msg').textContent = err.message || 'Koneksi gagal. Coba lagi.';
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+async function load(){
+  try {
+    const r = await fetch('/api/admin/orders');
+    const j = await r.json();
+    if(!r.ok) throw new Error(j.error || 'Gagal memuat pesanan');
+
+    $('orders').innerHTML = (j.orders || []).map(o =>
+      `<div class="card">
+        <b>${esc(o.id)} — ${esc(o.product)}</b>
+        <p>${esc(o.item)} × ${o.quantity} | ${esc(o.payment)} | Rp ${Number(o.total).toLocaleString('id-ID')}</p>
+        <p>Pembeli: ${esc(o.name)} | WA: ${esc(o.whatsapp)}</p>
+        <p>Status: <b>${esc(o.status)}</b></p>
+        ${o.status==='pending'
+          ? `<button class="ok" onclick="decide('${esc(o.id)}','accept')">TERIMA PESANAN</button>
+             <button class="no" onclick="decide('${esc(o.id)}','reject')">TOLAK PESANAN</button>`
+          : ''}
+      </div>`
+    ).join('') || '<p class="muted">Belum ada pesanan.</p>';
+  } catch(err) {
+    $('orders').textContent = err.message;
+  }
+}
+
+async function decide(id,action){
+  if(!confirm(action==='accept'?'Terima pesanan dan kurangi stok?':'Tolak pesanan?')) return;
+  try {
+    const r = await fetch('/api/admin/decision',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id,action})
+    });
+    const j = await r.json();
+    if(!r.ok) throw new Error(j.error || 'Gagal memproses pesanan');
+    alert('Berhasil');
+    load();
+  } catch(err) {
+    alert(err.message);
+  }
+}
+
+function esc(s){
+  return String(s??'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+</script>
+</body>
+</html>
