@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#100820">
 <title>Admin MARFIN STORE</title>
-
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#100820;color:#f1eaff;font:15px system-ui;padding:16px}
@@ -31,56 +30,27 @@ button:disabled{opacity:.5}
 .status{color:#d5b5ff}
 .small{font-size:13px}
 .clear{clear:both}
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;
-  margin-top:14px
-}
-.stat-box{
-  background:#261747;
-  border:1px solid #60438e;
-  border-radius:12px;
-  padding:14px
-}
+.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.stat-box{background:#261747;border:1px solid #60438e;border-radius:12px;padding:14px}
 .stat-label{color:#b9a9d5;font-size:12px}
-.stat-value{
-  font-size:25px;
-  font-weight:800;
-  color:#e2caff;
-  margin-top:5px;
-  overflow-wrap:anywhere
-}
+.stat-value{font-size:25px;font-weight:800;color:#e2caff;margin-top:5px;overflow-wrap:anywhere}
 .sales-chart{margin-top:20px}
 .sales-row{margin:14px 0}
-.sales-info{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  font-size:13px;
-  margin-bottom:6px
-}
-.sales-track{
-  height:12px;
-  background:#100820;
-  border-radius:20px;
-  overflow:hidden
-}
-.sales-bar{
-  height:100%;
-  background:linear-gradient(90deg,#6336a5,#c49aff);
-  border-radius:20px
-}
+.sales-info{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:6px}
+.sales-track{height:12px;background:#100820;border-radius:20px;overflow:hidden}
+.sales-bar{height:100%;background:linear-gradient(90deg,#6336a5,#c49aff);border-radius:20px}
+.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.report-box{background:#261747;border:1px solid #60438e;border-radius:12px;padding:14px}
+.report-value{font-size:20px;font-weight:800;color:#e2caff;margin-top:6px;overflow-wrap:anywhere}
+.report-order{border-bottom:1px solid #3a2766;padding:12px 0}
 @media(min-width:600px){
-  .stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.report-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 </style>
 </head>
-
 <body>
 <div class="wrap">
-
 <h1>MARFIN STORE — ADMIN</h1>
 
 <section id="login" class="card">
@@ -93,7 +63,6 @@ button:disabled{opacity:.5}
 </section>
 
 <section id="panel" hidden>
-
 <div class="card">
 <button class="logout" onclick="logout()">LOGOUT</button>
 <h2>ADMIN PANEL</h2>
@@ -101,88 +70,83 @@ button:disabled{opacity:.5}
 <div class="clear"></div>
 </div>
 
-<!-- DASHBOARD -->
 <div class="card">
 <h2>📊 DASHBOARD STATISTIK</h2>
 <p class="muted small">Ringkasan data pesanan dan persediaan toko.</p>
-
 <div class="stats-grid">
-
-<div class="stat-box">
-<div class="stat-label">TOTAL PESANAN</div>
-<div class="stat-value" id="statTotal">0</div>
+<div class="stat-box"><div class="stat-label">TOTAL PESANAN</div><div class="stat-value" id="statTotal">0</div></div>
+<div class="stat-box"><div class="stat-label">MENUNGGU</div><div class="stat-value" id="statPending">0</div></div>
+<div class="stat-box"><div class="stat-label">DITERIMA</div><div class="stat-value" id="statAccepted">0</div></div>
+<div class="stat-box"><div class="stat-label">DITOLAK</div><div class="stat-value" id="statRejected">0</div></div>
+<div class="stat-box"><div class="stat-label">TOTAL PRODUK</div><div class="stat-value" id="statProducts">0</div></div>
+<div class="stat-box"><div class="stat-label">TOTAL STOK</div><div class="stat-value" id="statStock">0</div></div>
 </div>
-
-<div class="stat-box">
-<div class="stat-label">MENUNGGU</div>
-<div class="stat-value" id="statPending">0</div>
-</div>
-
-<div class="stat-box">
-<div class="stat-label">DITERIMA</div>
-<div class="stat-value" id="statAccepted">0</div>
-</div>
-
-<div class="stat-box">
-<div class="stat-label">DITOLAK</div>
-<div class="stat-value" id="statRejected">0</div>
-</div>
-
-<div class="stat-box">
-<div class="stat-label">TOTAL PRODUK</div>
-<div class="stat-value" id="statProducts">0</div>
-</div>
-
-<div class="stat-box">
-<div class="stat-label">TOTAL STOK</div>
-<div class="stat-value" id="statStock">0</div>
-</div>
-
-</div>
-
 <div class="stat-box" style="margin-top:10px">
 <div class="stat-label">💰 TOTAL OMZET</div>
 <div class="stat-value" id="statOmzet">Rp 0</div>
 </div>
-
 <div class="sales-chart">
 <h3>📈 GRAFIK PENJUALAN PER PRODUK</h3>
 <p class="muted small">Berdasarkan pesanan yang sudah diterima.</p>
-<div id="salesChart" class="muted small">
-Belum ada penjualan.
+<div id="salesChart" class="muted small">Belum ada penjualan.</div>
 </div>
+<p class="muted small">Statistik diperbarui saat data stok atau pesanan dimuat ulang.</p>
 </div>
 
-<p class="muted small">
-Statistik diperbarui saat data stok atau pesanan dimuat ulang.
-</p>
+<!-- LAPORAN PENJUALAN -->
+<div class="card">
+<h2>📑 LAPORAN PENJUALAN</h2>
+<p class="muted small">Ringkasan omzet dari pesanan yang sudah diterima.</p>
+<div class="report-grid">
+<div class="report-box">
+<div class="stat-label">OMZET HARI INI</div>
+<div class="report-value" id="reportToday">Rp 0</div>
+</div>
+<div class="report-box">
+<div class="stat-label">OMZET 7 HARI</div>
+<div class="report-value" id="reportWeek">Rp 0</div>
+</div>
+<div class="report-box">
+<div class="stat-label">OMZET BULAN INI</div>
+<div class="report-value" id="reportMonth">Rp 0</div>
+</div>
+<div class="report-box">
+<div class="stat-label">UNIT TERJUAL BULAN INI</div>
+<div class="report-value" id="reportUnits">0</div>
+</div>
+<div class="report-box">
+<div class="stat-label">TRANSAKSI BERHASIL BULAN INI</div>
+<div class="report-value" id="reportCount">0</div>
+</div>
+<div class="report-box">
+<div class="stat-label">TOTAL TRANSAKSI BERHASIL</div>
+<div class="report-value" id="reportAllCount">0</div>
+</div>
+</div>
+<button class="ok" onclick="downloadReport()">⬇️ UNDUH LAPORAN CSV</button>
+<h3>🧾 Transaksi Berhasil</h3>
+<div id="reportOrders" class="muted small">Belum ada transaksi.</div>
+<p class="muted small">Periode laporan menggunakan tanggal pesanan (createdAt). Hanya pesanan berstatus accepted yang dihitung.</p>
 </div>
 
 <!-- KELOLA STOK -->
 <div class="card">
 <h2>📦 KELOLA STOK</h2>
 <p class="muted small">Tambah, kurangi, atau atur stok produk.</p>
-
 <button class="primary" onclick="loadStock()">MUAT ULANG STOK</button>
 <div id="stockList" class="muted">Memuat stok...</div>
-
 <hr style="border-color:#3a2766;margin:18px 0">
-
 <h3>Ubah Stok Produk</h3>
-
 <label>Produk</label>
 <select id="stockProduct"></select>
-
 <label>Jenis perubahan</label>
 <select id="stockMode">
 <option value="set">Atur jumlah stok</option>
 <option value="add">Tambah stok</option>
 <option value="subtract">Kurangi stok</option>
 </select>
-
 <label>Jumlah</label>
 <input id="stockAmount" type="number" min="0" step="1" placeholder="Masukkan jumlah">
-
 <button id="saveStockBtn" class="ok" onclick="saveStock()">SIMPAN STOK</button>
 <p id="stockMsg" class="muted"></p>
 </div>
@@ -190,482 +154,319 @@ Statistik diperbarui saat data stok atau pesanan dimuat ulang.
 <!-- PESANAN -->
 <div class="card">
 <h2>🧾 PESANAN & RIWAYAT</h2>
-
 <button class="primary" onclick="loadOrders()">MUAT ULANG PESANAN</button>
-
 <div class="tabs">
 <button onclick="setFilter('all')">SEMUA</button>
 <button onclick="setFilter('pending')">MENUNGGU</button>
 <button onclick="setFilter('accepted')">DITERIMA</button>
 <button onclick="setFilter('rejected')">DITOLAK</button>
 </div>
-
 <div id="orders" class="muted">Memuat pesanan...</div>
 </div>
-
 </section>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
-
 let stockData = {};
 let orderData = [];
 let orderFilter = 'all';
 
-/* DASHBOARD STATISTIK */
-function renderStats(){
-
-  const total = orderData.length;
-
-  const pending = orderData.filter(
-    o => o.status === 'pending'
-  ).length;
-
-  const acceptedOrders = orderData.filter(
-    o => o.status === 'accepted'
-  );
-
-  const rejected = orderData.filter(
-    o => o.status === 'rejected'
-  ).length;
-
-  const products = Object.keys(stockData).length;
-
-  const totalStock = Object.values(stockData).reduce(
-    (sum,value) => sum + (Number(value) || 0),0
-  );
-
-  const omzet = acceptedOrders.reduce(
-    (sum,o) => sum + (Number(o.total) || 0),0
-  );
-
-  $('statTotal').textContent = total;
-  $('statPending').textContent = pending;
-  $('statAccepted').textContent = acceptedOrders.length;
-  $('statRejected').textContent = rejected;
-  $('statProducts').textContent = products;
-  $('statStock').textContent = totalStock.toLocaleString('id-ID');
-
-  $('statOmzet').textContent =
-    'Rp ' + omzet.toLocaleString('id-ID');
-
-  /* DATA GRAFIK PENJUALAN */
-  const productSales = {};
-
-  acceptedOrders.forEach(o => {
-    const name = String(o.product || 'Produk lain');
-
-    productSales[name] =
-      (productSales[name] || 0) +
-      (Number(o.quantity) || 0);
-  });
-
-  const sales = Object.entries(productSales)
-    .sort((a,b) => b[1] - a[1]);
-
-  if(!sales.length){
-    $('salesChart').textContent =
-      'Belum ada penjualan yang berhasil.';
-    return;
-  }
-
-  const maxSales = Math.max(
-    ...sales.map(item => item[1])
-  );
-
-  $('salesChart').innerHTML = sales.slice(0,10).map(
-    ([name,quantity]) => {
-
-      const width = Math.max(
-        3,
-        quantity / maxSales * 100
-      );
-
-      return `
-        <div class="sales-row">
-          <div class="sales-info">
-            <b>${esc(name)}</b>
-            <span>${quantity} unit</span>
-          </div>
-          <div class="sales-track">
-            <div class="sales-bar" style="width:${width}%"></div>
-          </div>
-        </div>
-      `;
-    }
-  ).join('');
+function rupiah(value){
+return 'Rp ' + (Number(value)||0).toLocaleString('id-ID');
 }
 
-/* LOGIN ADMIN */
+function getOrderDate(order){
+const value = order.createdAt || order.created_at || order.date || order.timestamp;
+if(!value) return null;
+const date = new Date(value);
+return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function sameDay(a,b){
+return a.getFullYear()===b.getFullYear() &&
+a.getMonth()===b.getMonth() &&
+a.getDate()===b.getDate();
+}
+
+function renderStats(){
+const total = orderData.length;
+const pending = orderData.filter(o=>o.status==='pending').length;
+const acceptedOrders = orderData.filter(o=>o.status==='accepted');
+const rejected = orderData.filter(o=>o.status==='rejected');
+const products = Object.keys(stockData).length;
+const totalStock = Object.values(stockData).reduce((sum,v)=>sum+(Number(v)||0),0);
+const omzet = acceptedOrders.reduce((sum,o)=>sum+(Number(o.total)||0),0);
+
+$('statTotal').textContent=total;
+$('statPending').textContent=pending;
+$('statAccepted').textContent=acceptedOrders.length;
+$('statRejected').textContent=rejected.length;
+$('statProducts').textContent=products;
+$('statStock').textContent=totalStock.toLocaleString('id-ID');
+$('statOmzet').textContent=rupiah(omzet);
+
+const productSales={};
+acceptedOrders.forEach(o=>{
+const name=String(o.product||'Produk lain');
+productSales[name]=(productSales[name]||0)+(Number(o.quantity)||0);
+});
+const sales=Object.entries(productSales).sort((a,b)=>b[1]-a[1]);
+
+if(!sales.length){
+$('salesChart').textContent='Belum ada penjualan yang berhasil.';
+}else{
+const maxSales=Math.max(...sales.map(x=>x[1]));
+$('salesChart').innerHTML=sales.slice(0,10).map(([name,quantity])=>{
+const width=Math.max(3,quantity/maxSales*100);
+return `<div class="sales-row">
+<div class="sales-info"><b>${esc(name)}</b><span>${quantity} unit</span></div>
+<div class="sales-track"><div class="sales-bar" style="width:${width}%"></div></div>
+</div>`;
+}).join('');
+}
+renderReports();
+}
+
+function renderReports(){
+const accepted=orderData.filter(o=>o.status==='accepted');
+const now=new Date();
+const today=accepted.filter(o=>{
+const d=getOrderDate(o);
+return d && sameDay(d,now);
+});
+const weekStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()-6);
+const week=accepted.filter(o=>{
+const d=getOrderDate(o);
+return d && d>=weekStart && d<=now;
+});
+const month=accepted.filter(o=>{
+const d=getOrderDate(o);
+return d && d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
+});
+const sum=arr=>arr.reduce((n,o)=>n+(Number(o.total)||0),0);
+const units=arr=>arr.reduce((n,o)=>n+(Number(o.quantity)||0),0);
+
+$('reportToday').textContent=rupiah(sum(today));
+$('reportWeek').textContent=rupiah(sum(week));
+$('reportMonth').textContent=rupiah(sum(month));
+$('reportUnits').textContent=units(month).toLocaleString('id-ID');
+$('reportCount').textContent=month.length;
+$('reportAllCount').textContent=accepted.length;
+
+const sorted=[...accepted].sort((a,b)=>{
+return (getOrderDate(b)?.getTime()||0)-(getOrderDate(a)?.getTime()||0);
+});
+$('reportOrders').innerHTML=sorted.slice(0,20).map(o=>{
+const d=getOrderDate(o);
+const dateText=d?d.toLocaleString('id-ID'):'Tanggal tidak tersedia';
+return `<div class="report-order">
+<b>${esc(o.id)} — ${esc(o.product)}</b>
+<div>${Number(o.quantity)||0} unit | ${rupiah(o.total)}</div>
+<div class="muted">${esc(dateText)} | ${esc(o.name||'-')}</div>
+</div>`;
+}).join('')||'Belum ada transaksi berhasil.';
+}
+
+function downloadReport(){
+const accepted=orderData.filter(o=>o.status==='accepted');
+if(!accepted.length){
+alert('Belum ada transaksi berhasil untuk diunduh.');
+return;
+}
+const rows=[
+['ID Pesanan','Produk','Item','Jumlah','Pembayaran','Total','Nama Pembeli','WhatsApp','Tanggal Pesanan','Status']
+];
+accepted.forEach(o=>{
+const d=getOrderDate(o);
+rows.push([
+o.id,o.product,o.item,o.quantity,o.payment,o.total,
+o.name,o.whatsapp,d?d.toISOString():'',o.status
+]);
+});
+const csv=rows.map(row=>row.map(value=>{
+let s=String(value??'').replace(/"/g,'""');
+return '"'+s+'"';
+}).join(',')).join('\r\n');
+const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;
+a.download='laporan-marfin-store.csv';
+document.body.appendChild(a);
+a.click();
+a.remove();
+URL.revokeObjectURL(url);
+}
+
+/* LOGIN */
 $('loginForm').addEventListener('submit',async function(e){
-
-  e.preventDefault();
-
-  const btn = $('loginBtn');
-  btn.disabled = true;
-  $('msg').textContent = 'Sedang masuk...';
-
-  try{
-
-    const r = await fetch('/api/admin/login',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        password:$('pw').value
-      })
-    });
-
-    const j = await r.json();
-
-    if(!r.ok){
-      throw new Error(j.error || 'Login gagal');
-    }
-
-    $('login').hidden = true;
-    $('panel').hidden = false;
-    $('msg').textContent = '';
-
-    await Promise.all([
-      loadStock(),
-      loadOrders()
-    ]);
-
-  }catch(err){
-
-    $('msg').textContent =
-      err.message || 'Koneksi gagal';
-
-  }finally{
-
-    btn.disabled = false;
-
-  }
+e.preventDefault();
+const btn=$('loginBtn');
+btn.disabled=true;
+$('msg').textContent='Sedang masuk...';
+try{
+const r=await fetch('/api/admin/login',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({password:$('pw').value})
+});
+const j=await r.json();
+if(!r.ok) throw new Error(j.error||'Login gagal');
+$('login').hidden=true;
+$('panel').hidden=false;
+$('msg').textContent='';
+await Promise.all([loadStock(),loadOrders()]);
+}catch(err){
+$('msg').textContent=err.message||'Koneksi gagal';
+}finally{
+btn.disabled=false;
+}
 });
 
 /* LOGOUT */
 async function logout(){
-
-  if(!confirm('Yakin ingin keluar dari admin?')) return;
-
-  try{
-
-    const r = await fetch('/api/admin/logout',{
-      method:'POST'
-    });
-
-    const j = await r.json();
-
-    if(!r.ok){
-      throw new Error(j.error || 'Logout gagal');
-    }
-
-    $('panel').hidden = true;
-    $('login').hidden = false;
-    $('pw').value = '';
-
-    $('stockList').textContent = '';
-    $('orders').textContent = '';
-
-    stockData = {};
-    orderData = [];
-
-    renderStats();
-
-    alert('Berhasil logout.');
-
-  }catch(err){
-
-    alert(err.message);
-
-  }
+if(!confirm('Yakin ingin keluar dari admin?'))return;
+try{
+const r=await fetch('/api/admin/logout',{method:'POST'});
+const j=await r.json();
+if(!r.ok)throw new Error(j.error||'Logout gagal');
+$('panel').hidden=true;
+$('login').hidden=false;
+$('pw').value='';
+$('stockList').textContent='';
+$('orders').textContent='';
+$('reportOrders').textContent='Belum ada transaksi.';
+stockData={};
+orderData=[];
+renderStats();
+alert('Berhasil logout.');
+}catch(err){alert(err.message);}
 }
 
 /* MUAT STOK */
 async function loadStock(){
-
-  $('stockList').textContent = 'Memuat stok...';
-
-  try{
-
-    const r = await fetch('/api/admin/stock',{
-      cache:'no-store'
-    });
-
-    const j = await r.json();
-
-    if(!r.ok){
-      throw new Error(j.error || 'Gagal memuat stok');
-    }
-
-    stockData = j.stock || {};
-
-    const products = Object.keys(stockData);
-
-    $('stockList').innerHTML = products.map(name => `
-      <div class="stock-row">
-        <span>${esc(name)}</span>
-        <span class="stock-number">
-          ${Number(stockData[name])} unit
-        </span>
-      </div>
-    `).join('') || '<p>Belum ada produk.</p>';
-
-    $('stockProduct').innerHTML = products.map(name => `
-      <option value="${esc(name)}">${esc(name)}</option>
-    `).join('');
-
-    renderStats();
-
-  }catch(err){
-
-    $('stockList').textContent = err.message;
-
-  }
+$('stockList').textContent='Memuat stok...';
+try{
+const r=await fetch('/api/admin/stock',{cache:'no-store'});
+const j=await r.json();
+if(!r.ok)throw new Error(j.error||'Gagal memuat stok');
+stockData=j.stock||{};
+const products=Object.keys(stockData);
+$('stockList').innerHTML=products.map(name=>`
+<div class="stock-row">
+<span>${esc(name)}</span>
+<span class="stock-number">${Number(stockData[name])} unit</span>
+</div>`).join('')||'<p>Belum ada produk.</p>';
+$('stockProduct').innerHTML=products.map(name=>
+`<option value="${esc(name)}">${esc(name)}</option>`
+).join('');
+renderStats();
+}catch(err){$('stockList').textContent=err.message;}
 }
 
 /* SIMPAN STOK */
 async function saveStock(){
-
-  const btn = $('saveStockBtn');
-
-  const product = $('stockProduct').value;
-  const amountText = $('stockAmount').value;
-  const amount = Number(amountText);
-  const mode = $('stockMode').value;
-
-  if(
-    !product ||
-    amountText === '' ||
-    !Number.isInteger(amount) ||
-    amount < 0
-  ){
-
-    $('stockMsg').textContent =
-      'Masukkan jumlah stok berupa bilangan bulat 0 atau lebih.';
-
-    return;
-  }
-
-  let newStock = amount;
-
-  const current = Number(stockData[product] || 0);
-
-  if(mode === 'add'){
-    newStock = current + amount;
-  }
-
-  if(mode === 'subtract'){
-    newStock = current - amount;
-  }
-
-  if(newStock < 0 || newStock > 100000){
-
-    $('stockMsg').textContent =
-      'Jumlah stok harus antara 0 sampai 100000.';
-
-    return;
-  }
-
-  btn.disabled = true;
-  $('stockMsg').textContent = 'Menyimpan stok...';
-
-  try{
-
-    const r = await fetch('/api/admin/stock',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        product,
-        stock:newStock
-      })
-    });
-
-    const j = await r.json();
-
-    if(!r.ok){
-      throw new Error(j.error || 'Gagal menyimpan stok');
-    }
-
-    $('stockMsg').textContent =
-      'Stok berhasil diperbarui: ' +
-      product + ' = ' + newStock;
-
-    $('stockAmount').value = '';
-
-    await loadStock();
-
-  }catch(err){
-
-    $('stockMsg').textContent = err.message;
-
-  }finally{
-
-    btn.disabled = false;
-
-  }
+const btn=$('saveStockBtn');
+const product=$('stockProduct').value;
+const amountText=$('stockAmount').value;
+const amount=Number(amountText);
+const mode=$('stockMode').value;
+if(!product||amountText===''||!Number.isInteger(amount)||amount<0){
+$('stockMsg').textContent='Masukkan jumlah stok berupa bilangan bulat 0 atau lebih.';
+return;
+}
+let newStock=amount;
+const current=Number(stockData[product]||0);
+if(mode==='add')newStock=current+amount;
+if(mode==='subtract')newStock=current-amount;
+if(newStock<0||newStock>100000){
+$('stockMsg').textContent='Jumlah stok harus antara 0 sampai 100000.';
+return;
+}
+btn.disabled=true;
+$('stockMsg').textContent='Menyimpan stok...';
+try{
+const r=await fetch('/api/admin/stock',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({product,stock:newStock})
+});
+const j=await r.json();
+if(!r.ok)throw new Error(j.error||'Gagal menyimpan stok');
+$('stockMsg').textContent='Stok berhasil diperbarui: '+product+' = '+newStock;
+$('stockAmount').value='';
+await loadStock();
+}catch(err){
+$('stockMsg').textContent=err.message;
+}finally{btn.disabled=false;}
 }
 
 /* MUAT PESANAN */
 async function loadOrders(){
-
-  $('orders').textContent = 'Memuat pesanan...';
-
-  try{
-
-    const r = await fetch('/api/admin/orders',{
-      cache:'no-store'
-    });
-
-    const j = await r.json();
-
-    if(!r.ok){
-      throw new Error(j.error || 'Gagal memuat pesanan');
-    }
-
-    orderData = j.orders || [];
-
-    renderOrders();
-    renderStats();
-
-  }catch(err){
-
-    $('orders').textContent = err.message;
-
-  }
+$('orders').textContent='Memuat pesanan...';
+try{
+const r=await fetch('/api/admin/orders',{cache:'no-store'});
+const j=await r.json();
+if(!r.ok)throw new Error(j.error||'Gagal memuat pesanan');
+orderData=j.orders||[];
+renderOrders();
+renderStats();
+}catch(err){$('orders').textContent=err.message;}
 }
 
 /* FILTER PESANAN */
 function setFilter(filter){
-
-  orderFilter = filter;
-  renderOrders();
-
+orderFilter=filter;
+renderOrders();
 }
 
 /* TAMPILKAN PESANAN */
 function renderOrders(){
-
-  const filtered = orderData.filter(o =>
-    orderFilter === 'all' ||
-    o.status === orderFilter
-  );
-
-  $('orders').innerHTML = filtered.map(o => `
-
-    <div class="card">
-
-      <b>${esc(o.id)} — ${esc(o.product)}</b>
-
-      <p>
-        ${esc(o.item)} × ${Number(o.quantity)}
-        | ${esc(o.payment)}
-      </p>
-
-      <p>
-        Total: Rp ${Number(o.total).toLocaleString('id-ID')}
-      </p>
-
-      <p>
-        Pembeli: ${esc(o.name)}
-        | WA: ${esc(o.whatsapp)}
-      </p>
-
-      <p>
-        Status:
-        <b class="status">${esc(o.status)}</b>
-      </p>
-
-      ${o.status === 'pending'
-        ? `
-          <button class="ok"
-            data-id="${esc(o.id)}"
-            data-action="accept">
-            TERIMA PESANAN
-          </button>
-
-          <button class="no"
-            data-id="${esc(o.id)}"
-            data-action="reject">
-            TOLAK PESANAN
-          </button>
-        `
-        : ''}
-
-    </div>
-
-  `).join('') ||
-    '<p class="muted">Tidak ada pesanan pada kategori ini.</p>';
-
+const filtered=orderData.filter(o=>orderFilter==='all'||o.status===orderFilter);
+$('orders').innerHTML=filtered.map(o=>`
+<div class="card">
+<b>${esc(o.id)} — ${esc(o.product)}</b>
+<p>${esc(o.item)} × ${Number(o.quantity)} | ${esc(o.payment)}</p>
+<p>Total: ${rupiah(o.total)}</p>
+<p>Pembeli: ${esc(o.name)} | WA: ${esc(o.whatsapp)}</p>
+<p>Status: <b class="status">${esc(o.status)}</b></p>
+${o.status==='pending'?`
+<button class="ok" data-id="${esc(o.id)}" data-action="accept">TERIMA PESANAN</button>
+<button class="no" data-id="${esc(o.id)}" data-action="reject">TOLAK PESANAN</button>`:''}
+</div>`).join('')||'<p class="muted">Tidak ada pesanan pada kategori ini.</p>';
 }
 
 /* KLIK TERIMA / TOLAK */
 $('orders').addEventListener('click',function(e){
-
-  const btn = e.target.closest('button[data-action]');
-
-  if(!btn) return;
-
-  decide(
-    btn.dataset.id,
-    btn.dataset.action
-  );
-
+const btn=e.target.closest('button[data-action]');
+if(!btn)return;
+decide(btn.dataset.id,btn.dataset.action);
 });
 
 /* PROSES PESANAN */
 async function decide(id,action){
-
-  const question = action === 'accept'
-    ? 'Terima pesanan dan kurangi stok?'
-    : 'Tolak pesanan?';
-
-  if(!confirm(question)) return;
-
-  try{
-
-    const r = await fetch('/api/admin/decision',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        id,
-        action
-      })
-    });
-
-    const j = await r.json();
-
-    if(!r.ok){
-      throw new Error(j.error || 'Gagal memproses pesanan');
-    }
-
-    alert(j.error || 'Berhasil diproses');
-
-    await Promise.all([
-      loadOrders(),
-      loadStock()
-    ]);
-
-  }catch(err){
-
-    alert(err.message);
-
-  }
+const question=action==='accept'?'Terima pesanan dan kurangi stok?':'Tolak pesanan?';
+if(!confirm(question))return;
+try{
+const r=await fetch('/api/admin/decision',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({id,action})
+});
+const j=await r.json();
+if(!r.ok)throw new Error(j.error||'Gagal memproses pesanan');
+alert(j.error||'Berhasil diproses');
+await Promise.all([loadOrders(),loadStock()]);
+}catch(err){alert(err.message);}
 }
 
 /* AMANKAN TEKS */
 function esc(s){
-
-  return String(s ?? '').replace(/[&<>"']/g,c=>({
-    '&':'&amp;',
-    '<':'&lt;',
-    '>':'&gt;',
-    '"':'&quot;',
-    "'":'&#39;'
-  }[c]));
-
+return String(s??'').replace(/[&<>"']/g,c=>({
+'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
 }
 </script>
-
 </body>
-  </html>
+                                                                </html>
