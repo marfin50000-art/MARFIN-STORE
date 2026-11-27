@@ -29,6 +29,11 @@ button:disabled{opacity:.5}
 .status{color:#d5b5ff}
 .small{font-size:13px}
 .clear{clear:both}
+.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.stat-box{background:#261747;border:1px solid #60438e;border-radius:12px;padding:14px}
+.stat-label{color:#b9a9d5;font-size:12px}
+.stat-value{font-size:25px;font-weight:800;color:#e2caff;margin-top:5px}
+@media(min-width:600px){.stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -51,6 +56,38 @@ button:disabled{opacity:.5}
 <h2>ADMIN PANEL</h2>
 <p class="muted small">Kelola sistem MARFIN STORE.</p>
 <div class="clear"></div>
+</div>
+
+<div class="card">
+<h2>📊 DASHBOARD STATISTIK</h2>
+<p class="muted small">Ringkasan data pesanan dan persediaan toko.</p>
+<div class="stats-grid">
+<div class="stat-box">
+<div class="stat-label">TOTAL PESANAN</div>
+<div class="stat-value" id="statTotal">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">MENUNGGU</div>
+<div class="stat-value" id="statPending">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">DITERIMA</div>
+<div class="stat-value" id="statAccepted">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">DITOLAK</div>
+<div class="stat-value" id="statRejected">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">TOTAL PRODUK</div>
+<div class="stat-value" id="statProducts">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">TOTAL STOK</div>
+<div class="stat-value" id="statStock">0</div>
+</div>
+</div>
+<p class="muted small">Statistik diperbarui saat data stok atau pesanan dimuat ulang.</p>
 </div>
 
 <div class="card">
@@ -102,6 +139,24 @@ let stockData = {};
 let orderData = [];
 let orderFilter = 'all';
 
+function renderStats(){
+  const total = orderData.length;
+  const pending = orderData.filter(o => o.status === 'pending').length;
+  const accepted = orderData.filter(o => o.status === 'accepted').length;
+  const rejected = orderData.filter(o => o.status === 'rejected').length;
+  const products = Object.keys(stockData).length;
+  const totalStock = Object.values(stockData).reduce(
+    (sum,value) => sum + (Number(value) || 0), 0
+  );
+
+  $('statTotal').textContent = total;
+  $('statPending').textContent = pending;
+  $('statAccepted').textContent = accepted;
+  $('statRejected').textContent = rejected;
+  $('statProducts').textContent = products;
+  $('statStock').textContent = totalStock.toLocaleString('id-ID');
+}
+
 $('loginForm').addEventListener('submit', async function(e){
   e.preventDefault();
   const btn = $('loginBtn');
@@ -144,6 +199,7 @@ async function logout(){
     $('orders').textContent = '';
     stockData = {};
     orderData = [];
+    renderStats();
 
     alert('Berhasil logout.');
   } catch(err) {
@@ -172,6 +228,8 @@ async function loadStock(){
     $('stockProduct').innerHTML = products.map(name =>
       `<option value="${esc(name)}">${esc(name)}</option>`
     ).join('');
+
+    renderStats();
 
   } catch(err) {
     $('stockList').textContent = err.message;
@@ -235,6 +293,7 @@ async function loadOrders(){
 
     orderData = j.orders || [];
     renderOrders();
+    renderStats();
   } catch(err) {
     $('orders').textContent = err.message;
   }
@@ -306,4 +365,4 @@ function esc(s){
 }
 </script>
 </body>
-</html>
+  </html>
