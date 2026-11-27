@@ -3,19 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#100820">
 <title>Admin MARFIN STORE</title>
 <style>
-body{margin:0;background:#100820;color:#f1eaff;font:15px system-ui;padding:20px}
-.wrap{max-width:760px;margin:auto}
+*{box-sizing:border-box}
+body{margin:0;background:#100820;color:#f1eaff;font:15px system-ui;padding:16px}
+.wrap{max-width:850px;margin:auto}
 h1{color:#c49aff}
+h2{color:#d8bdff;font-size:19px}
 .card{background:#1b1033;border:1px solid #3a2766;border-radius:14px;padding:16px;margin:12px 0}
-input,button{padding:12px;border-radius:9px;border:1px solid #60438e;background:#261747;color:white;font:inherit}
-input{width:100%;box-sizing:border-box;margin-bottom:10px}
+input,select,button{padding:12px;border-radius:9px;border:1px solid #60438e;background:#261747;color:white;font:inherit}
+input,select{width:100%;margin:5px 0 12px}
 button{cursor:pointer;margin:4px}
-button:disabled{opacity:.5;cursor:wait}
-.ok{background:#176b49}.no{background:#8b2945}
+button:disabled{opacity:.5}
+.ok{background:#176b49}
+.no{background:#8b2945}
+.primary{background:#6336a5}
 .muted{color:#b9a9d5}
 #msg{color:#ff9ab0}
+.stock-row{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #3a2766;padding:12px 0}
+.stock-number{font-weight:bold;color:#d5b5ff}
+.tabs{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0}
+.tabs button{font-size:13px}
+.status{color:#d5b5ff}
+.small{font-size:13px}
 </style>
 </head>
 <body>
@@ -32,13 +43,55 @@ button:disabled{opacity:.5;cursor:wait}
 </section>
 
 <section id="panel" hidden>
-<button onclick="load()">MUAT ULANG PESANAN</button>
-<div id="orders"></div>
+
+<div class="card">
+<h2>📦 KELOLA STOK</h2>
+<p class="muted small">Tambah, kurangi, atau atur stok produk.</p>
+<button class="primary" onclick="loadStock()">MUAT ULANG STOK</button>
+<div id="stockList" class="muted">Memuat stok...</div>
+
+<hr style="border-color:#3a2766;margin:18px 0">
+
+<h3>Ubah Stok Produk</h3>
+<label>Produk</label>
+<select id="stockProduct"></select>
+
+<label>Jenis perubahan</label>
+<select id="stockMode">
+<option value="set">Atur jumlah stok</option>
+<option value="add">Tambah stok</option>
+<option value="subtract">Kurangi stok</option>
+</select>
+
+<label>Jumlah</label>
+<input id="stockAmount" type="number" min="0" step="1" placeholder="Masukkan jumlah">
+
+<button id="saveStockBtn" class="ok" onclick="saveStock()">SIMPAN STOK</button>
+<p id="stockMsg" class="muted"></p>
+</div>
+
+<div class="card">
+<h2>🧾 PESANAN & RIWAYAT</h2>
+<button class="primary" onclick="loadOrders()">MUAT ULANG PESANAN</button>
+
+<div class="tabs">
+<button onclick="setFilter('all')">SEMUA</button>
+<button onclick="setFilter('pending')">MENUNGGU</button>
+<button onclick="setFilter('accepted')">DITERIMA</button>
+<button onclick="setFilter('rejected')">DITOLAK</button>
+</div>
+
+<div id="orders" class="muted">Memuat pesanan...</div>
+</div>
+
 </section>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
+let stockData = {};
+let orderData = [];
+let orderFilter = 'all';
 
 $('loginForm').addEventListener('submit', async function(e){
   e.preventDefault();
@@ -47,71 +100,179 @@ $('loginForm').addEventListener('submit', async function(e){
   $('msg').textContent = 'Sedang masuk...';
 
   try {
-    const r = await fetch('/api/admin/login', {
+    const r = await fetch('/api/admin/login',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({password:$('pw').value})
     });
     const j = await r.json();
-
     if(!r.ok) throw new Error(j.error || 'Login gagal');
 
     $('login').hidden = true;
     $('panel').hidden = false;
     $('msg').textContent = '';
-    await load();
+
+    await Promise.all([loadStock(),loadOrders()]);
   } catch(err) {
-    $('msg').textContent = err.message || 'Koneksi gagal. Coba lagi.';
+    $('msg').textContent = err.message || 'Koneksi gagal';
   } finally {
     btn.disabled = false;
   }
 });
 
-async function load(){
+async function loadStock(){
+  $('stockList').textContent = 'Memuat stok...';
+
   try {
-    const r = await fetch('/api/admin/orders');
+    const r = await fetch('/api/admin/stock',{cache:'no-store'});
+    const j = await r.json();
+    if(!r.ok) throw new Error(j.error || 'Gagal memuat stok');
+
+    stockData = j.stock || {};
+    const products = Object.keys(stockData);
+
+    $('stockList').innerHTML = products.map(name =>
+      `<div class="stock-row">
+        <span>${esc(name)}</span>
+        <span class="stock-number">${Number(stockData[name])} unit</span>
+      </div>`
+    ).join('') || '<p>Belum ada produk.</p>';
+
+    $('stockProduct').innerHTML = products.map(name =>
+      `<option value="${esc(name)}">${esc(name)}</option>`
+    ).join('');
+
+  } catch(err) {
+    $('stockList').textContent = err.message;
+  }
+}
+
+async function saveStock(){
+  const btn = $('saveStockBtn');
+  const product = $('stockProduct').value;
+  const amountText = $('stockAmount').value;
+  const amount = Number(amountText);
+  const mode = $('stockMode').value;
+
+  if(!product || amountText === '' || !Number.isInteger(amount) || amount < 0){
+    $('stockMsg').textContent = 'Masukkan jumlah stok berupa bilangan bulat 0 atau lebih.';
+    return;
+  }
+
+  let newStock = amount;
+  const current = Number(stockData[product] || 0);
+
+  if(mode === 'add') newStock = current + amount;
+  if(mode === 'subtract') newStock = current - amount;
+
+  if(newStock < 0 || newStock > 100000){
+    $('stockMsg').textContent = 'Jumlah stok harus antara 0 sampai 100000.';
+    return;
+  }
+
+  btn.disabled = true;
+  $('stockMsg').textContent = 'Menyimpan stok...';
+
+  try {
+    const r = await fetch('/api/admin/stock',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({product,stock:newStock})
+    });
+
+    const j = await r.json();
+    if(!r.ok) throw new Error(j.error || 'Gagal menyimpan stok');
+
+    $('stockMsg').textContent = 'Stok berhasil diperbarui: ' + product + ' = ' + newStock;
+    $('stockAmount').value = '';
+    await loadStock();
+
+  } catch(err) {
+    $('stockMsg').textContent = err.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function loadOrders(){
+  $('orders').textContent = 'Memuat pesanan...';
+
+  try {
+    const r = await fetch('/api/admin/orders',{cache:'no-store'});
     const j = await r.json();
     if(!r.ok) throw new Error(j.error || 'Gagal memuat pesanan');
 
-    $('orders').innerHTML = (j.orders || []).map(o =>
-      `<div class="card">
-        <b>${esc(o.id)} — ${esc(o.product)}</b>
-        <p>${esc(o.item)} × ${o.quantity} | ${esc(o.payment)} | Rp ${Number(o.total).toLocaleString('id-ID')}</p>
-        <p>Pembeli: ${esc(o.name)} | WA: ${esc(o.whatsapp)}</p>
-        <p>Status: <b>${esc(o.status)}</b></p>
-        ${o.status==='pending'
-          ? `<button class="ok" onclick="decide('${esc(o.id)}','accept')">TERIMA PESANAN</button>
-             <button class="no" onclick="decide('${esc(o.id)}','reject')">TOLAK PESANAN</button>`
-          : ''}
-      </div>`
-    ).join('') || '<p class="muted">Belum ada pesanan.</p>';
+    orderData = j.orders || [];
+    renderOrders();
   } catch(err) {
     $('orders').textContent = err.message;
   }
 }
 
+function setFilter(filter){
+  orderFilter = filter;
+  renderOrders();
+}
+
+function renderOrders(){
+  const filtered = orderData.filter(o =>
+    orderFilter === 'all' || o.status === orderFilter
+  );
+
+  $('orders').innerHTML = filtered.map(o =>
+    `<div class="card">
+      <b>${esc(o.id)} — ${esc(o.product)}</b>
+      <p>${esc(o.item)} × ${Number(o.quantity)} | ${esc(o.payment)}</p>
+      <p>Total: Rp ${Number(o.total).toLocaleString('id-ID')}</p>
+      <p>Pembeli: ${esc(o.name)} | WA: ${esc(o.whatsapp)}</p>
+      <p>Status: <b class="status">${esc(o.status)}</b></p>
+      ${o.status === 'pending'
+        ? `<button class="ok" data-id="${esc(o.id)}" data-action="accept">TERIMA PESANAN</button>
+           <button class="no" data-id="${esc(o.id)}" data-action="reject">TOLAK PESANAN</button>`
+        : ''}
+    </div>`
+  ).join('') || '<p class="muted">Tidak ada pesanan pada kategori ini.</p>';
+}
+
+$('orders').addEventListener('click',function(e){
+  const btn = e.target.closest('button[data-action]');
+  if(!btn) return;
+  decide(btn.dataset.id,btn.dataset.action);
+});
+
 async function decide(id,action){
-  if(!confirm(action==='accept'?'Terima pesanan dan kurangi stok?':'Tolak pesanan?')) return;
+  const question = action === 'accept'
+    ? 'Terima pesanan dan kurangi stok?'
+    : 'Tolak pesanan?';
+
+  if(!confirm(question)) return;
+
   try {
     const r = await fetch('/api/admin/decision',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id,action})
     });
+
     const j = await r.json();
     if(!r.ok) throw new Error(j.error || 'Gagal memproses pesanan');
-    alert('Berhasil');
-    load();
+
+    alert(j.error || 'Berhasil diproses');
+    await Promise.all([loadOrders(),loadStock()]);
   } catch(err) {
     alert(err.message);
   }
 }
 
 function esc(s){
-  return String(s??'').replace(/[&<>"']/g,c=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  return String(s ?? '').replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
   }[c]));
 }
 </script>
 </body>
-</html>
+  </html>
