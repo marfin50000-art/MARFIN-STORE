@@ -31,70 +31,20 @@ button:disabled{opacity:.5}
 .status{color:#d5b5ff}
 .small{font-size:13px}
 .clear{clear:both}
-
-.stats-grid{
-display:grid;
-grid-template-columns:repeat(2,minmax(0,1fr));
-gap:10px;
-margin-top:14px
-}
-.stat-box{
-background:#261747;
-border:1px solid #60438e;
-border-radius:12px;
-padding:14px
-}
+.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.stat-box{background:#261747;border:1px solid #60438e;border-radius:12px;padding:14px}
 .stat-label{color:#b9a9d5;font-size:12px}
-.stat-value{
-font-size:25px;
-font-weight:800;
-color:#e2caff;
-margin-top:5px;
-overflow-wrap:anywhere
-}
+.stat-value{font-size:25px;font-weight:800;color:#e2caff;margin-top:5px;overflow-wrap:anywhere}
 .sales-chart{margin-top:20px}
 .sales-row{margin:14px 0}
-.sales-info{
-display:flex;
-justify-content:space-between;
-gap:8px;
-font-size:13px;
-margin-bottom:6px
-}
-.sales-track{
-height:12px;
-background:#100820;
-border-radius:20px;
-overflow:hidden
-}
-.sales-bar{
-height:100%;
-background:linear-gradient(90deg,#6336a5,#c49aff);
-border-radius:20px
-}
-.report-grid{
-display:grid;
-grid-template-columns:repeat(2,minmax(0,1fr));
-gap:10px;
-margin-top:14px
-}
-.report-box{
-background:#261747;
-border:1px solid #60438e;
-border-radius:12px;
-padding:14px
-}
-.report-value{
-font-size:20px;
-font-weight:800;
-color:#e2caff;
-margin-top:6px;
-overflow-wrap:anywhere
-}
-.report-order{
-border-bottom:1px solid #3a2766;
-padding:12px 0
-}
+.sales-info{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:6px}
+.sales-track{height:12px;background:#100820;border-radius:20px;overflow:hidden}
+.sales-bar{height:100%;background:linear-gradient(90deg,#6336a5,#c49aff);border-radius:20px}
+.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.report-box{background:#261747;border:1px solid #60438e;border-radius:12px;padding:14px}
+.report-value{font-size:20px;font-weight:800;color:#e2caff;margin-top:6px;overflow-wrap:anywhere}
+.report-order{border-bottom:1px solid #3a2766;padding:12px 0}
+.notice-status{color:#b9a9d5;font-size:13px}
 @media(min-width:600px){
 .stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .report-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -125,36 +75,23 @@ padding:12px 0
 <div class="clear"></div>
 </div>
 
-<!-- DASHBOARD -->
+<div class="card">
+<h2>🔔 NOTIFIKASI PESANAN</h2>
+<p class="notice-status" id="notificationStatus">Notifikasi aktif selama halaman admin terbuka.</p>
+<button class="primary" onclick="enableNotifications()">AKTIFKAN NOTIFIKASI</button>
+</div>
+
 <div class="card">
 <h2>📊 DASHBOARD STATISTIK</h2>
 <p class="muted small">Ringkasan data pesanan dan persediaan toko.</p>
 
 <div class="stats-grid">
-<div class="stat-box">
-<div class="stat-label">TOTAL PESANAN</div>
-<div class="stat-value" id="statTotal">0</div>
-</div>
-<div class="stat-box">
-<div class="stat-label">MENUNGGU</div>
-<div class="stat-value" id="statPending">0</div>
-</div>
-<div class="stat-box">
-<div class="stat-label">DITERIMA</div>
-<div class="stat-value" id="statAccepted">0</div>
-</div>
-<div class="stat-box">
-<div class="stat-label">DITOLAK</div>
-<div class="stat-value" id="statRejected">0</div>
-</div>
-<div class="stat-box">
-<div class="stat-label">TOTAL PRODUK</div>
-<div class="stat-value" id="statProducts">0</div>
-</div>
-<div class="stat-box">
-<div class="stat-label">TOTAL STOK</div>
-<div class="stat-value" id="statStock">0</div>
-</div>
+<div class="stat-box"><div class="stat-label">TOTAL PESANAN</div><div class="stat-value" id="statTotal">0</div></div>
+<div class="stat-box"><div class="stat-label">MENUNGGU</div><div class="stat-value" id="statPending">0</div></div>
+<div class="stat-box"><div class="stat-label">DITERIMA</div><div class="stat-value" id="statAccepted">0</div></div>
+<div class="stat-box"><div class="stat-label">DITOLAK</div><div class="stat-value" id="statRejected">0</div></div>
+<div class="stat-box"><div class="stat-label">TOTAL PRODUK</div><div class="stat-value" id="statProducts">0</div></div>
+<div class="stat-box"><div class="stat-label">TOTAL STOK</div><div class="stat-value" id="statStock">0</div></div>
 </div>
 
 <div class="stat-box" style="margin-top:10px">
@@ -171,95 +108,56 @@ padding:12px 0
 <p class="muted small">Statistik diperbarui saat data stok atau pesanan dimuat ulang.</p>
 </div>
 
-<!-- LAPORAN PENJUALAN -->
 <div class="card">
 <h2>📑 LAPORAN PENJUALAN</h2>
 <p class="muted small">Ringkasan omzet dari pesanan yang sudah diterima.</p>
 
 <div class="report-grid">
-<div class="report-box">
-<div class="stat-label">OMZET HARI INI</div>
-<div class="report-value" id="reportToday">Rp 0</div>
-</div>
-<div class="report-box">
-<div class="stat-label">OMZET 7 HARI</div>
-<div class="report-value" id="reportWeek">Rp 0</div>
-</div>
-<div class="report-box">
-<div class="stat-label">OMZET BULAN INI</div>
-<div class="report-value" id="reportMonth">Rp 0</div>
-</div>
-<div class="report-box">
-<div class="stat-label">UNIT TERJUAL BULAN INI</div>
-<div class="report-value" id="reportUnits">0</div>
-</div>
-<div class="report-box">
-<div class="stat-label">TRANSAKSI BERHASIL BULAN INI</div>
-<div class="report-value" id="reportCount">0</div>
-</div>
-<div class="report-box">
-<div class="stat-label">TOTAL TRANSAKSI BERHASIL</div>
-<div class="report-value" id="reportAllCount">0</div>
-</div>
+<div class="report-box"><div class="stat-label">OMZET HARI INI</div><div class="report-value" id="reportToday">Rp 0</div></div>
+<div class="report-box"><div class="stat-label">OMZET 7 HARI</div><div class="report-value" id="reportWeek">Rp 0</div></div>
+<div class="report-box"><div class="stat-label">OMZET BULAN INI</div><div class="report-value" id="reportMonth">Rp 0</div></div>
+<div class="report-box"><div class="stat-label">UNIT TERJUAL BULAN INI</div><div class="report-value" id="reportUnits">0</div></div>
+<div class="report-box"><div class="stat-label">TRANSAKSI BERHASIL BULAN INI</div><div class="report-value" id="reportCount">0</div></div>
+<div class="report-box"><div class="stat-label">TOTAL TRANSAKSI BERHASIL</div><div class="report-value" id="reportAllCount">0</div></div>
 </div>
 
 <button class="ok" onclick="downloadReport()">⬇️ UNDUH LAPORAN CSV</button>
-
 <h3>🧾 Transaksi Berhasil</h3>
 <div id="reportOrders" class="muted small">Belum ada transaksi.</div>
-
 <p class="muted small">Hanya pesanan berstatus accepted yang dihitung.</p>
 </div>
 
-<!-- KELOLA STOK -->
 <div class="card">
 <h2>📦 KELOLA STOK</h2>
 <p class="muted small">Tambah, kurangi, atau atur stok produk.</p>
-
 <button class="primary" onclick="loadStock()">MUAT ULANG STOK</button>
 <div id="stockList" class="muted">Memuat stok...</div>
-
 <hr style="border-color:#3a2766;margin:18px 0">
-
 <h3>Ubah Stok Produk</h3>
-
 <label>Produk</label>
 <select id="stockProduct"></select>
-
 <label>Jenis perubahan</label>
 <select id="stockMode">
 <option value="set">Atur jumlah stok</option>
 <option value="add">Tambah stok</option>
 <option value="subtract">Kurangi stok</option>
 </select>
-
 <label>Jumlah</label>
 <input id="stockAmount" type="number" min="0" step="1" placeholder="Masukkan jumlah">
-
 <button id="saveStockBtn" class="ok" onclick="saveStock()">SIMPAN STOK</button>
 <p id="stockMsg" class="muted"></p>
 </div>
 
-<!-- PESANAN -->
 <div class="card">
 <h2>🧾 PESANAN & RIWAYAT</h2>
-
 <button class="primary" onclick="loadOrders()">MUAT ULANG PESANAN</button>
-
-<!-- PENCARIAN PESANAN -->
-<input
-id="orderSearch"
-type="search"
-placeholder="🔎 Cari ID, nama, produk, atau WhatsApp..."
->
-
+<input id="orderSearch" type="search" placeholder="🔎 Cari ID, nama, produk, atau WhatsApp...">
 <div class="tabs">
 <button onclick="setFilter('all')">SEMUA</button>
 <button onclick="setFilter('pending')">MENUNGGU</button>
 <button onclick="setFilter('accepted')">DITERIMA</button>
 <button onclick="setFilter('rejected')">DITOLAK</button>
 </div>
-
 <div id="orders" class="muted">Memuat pesanan...</div>
 </div>
 
@@ -272,6 +170,10 @@ const $ = id => document.getElementById(id);
 let stockData = {};
 let orderData = [];
 let orderFilter = 'all';
+
+let pollingTimer = null;
+let knownOrderIds = null;
+let audioContext = null;
 
 function rupiah(value){
 return 'Rp ' + (Number(value)||0).toLocaleString('id-ID');
@@ -290,22 +192,115 @@ a.getMonth()===b.getMonth() &&
 a.getDate()===b.getDate();
 }
 
+/* NOTIFIKASI */
+async function enableNotifications(){
+
+if(!('Notification' in window)){
+$('notificationStatus').textContent='Browser ini tidak mendukung notifikasi.';
+return;
+}
+
+try{
+const permission=await Notification.requestPermission();
+
+if(permission==='granted'){
+$('notificationStatus').textContent='Notifikasi browser berhasil diaktifkan.';
+}else{
+$('notificationStatus').textContent='Izin notifikasi belum diberikan. Aktifkan melalui pengaturan browser.';
+}
+}catch(e){
+$('notificationStatus').textContent='Tidak bisa mengaktifkan notifikasi browser.';
+}
+
+startAudio();
+}
+
+function startAudio(){
+try{
+const AudioCtx=window.AudioContext||window.webkitAudioContext;
+if(!AudioCtx)return;
+
+if(!audioContext)audioContext=new AudioCtx();
+
+if(audioContext.state==='suspended'){
+audioContext.resume().catch(()=>{});
+}
+}catch(e){}
+}
+
+function playNotificationSound(){
+try{
+startAudio();
+if(!audioContext)return;
+
+const oscillator=audioContext.createOscillator();
+const gain=audioContext.createGain();
+
+oscillator.connect(gain);
+gain.connect(audioContext.destination);
+
+oscillator.type='sine';
+oscillator.frequency.setValueAtTime(880,audioContext.currentTime);
+oscillator.frequency.setValueAtTime(660,audioContext.currentTime+0.18);
+
+gain.gain.setValueAtTime(0.001,audioContext.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.25,audioContext.currentTime+0.03);
+gain.gain.exponentialRampToValueAtTime(0.001,audioContext.currentTime+0.45);
+
+oscillator.start();
+oscillator.stop(audioContext.currentTime+0.5);
+}catch(e){}
+}
+
+function notifyNewOrder(order){
+
+playNotificationSound();
+
+if('Notification' in window && Notification.permission==='granted'){
+try{
+const notification=new Notification('🔔 Pesanan Baru MARFIN STORE',{
+body:'ID: '+order.id+'\n'+(order.product||'Produk')+' — '+(order.name||'Pembeli'),
+tag:'marfin-order-'+order.id
+});
+
+notification.onclick=()=>{
+window.focus();
+notification.close();
+};
+}catch(e){}
+}
+
+$('notificationStatus').textContent='🔔 Pesanan baru terdeteksi: '+order.id;
+}
+
+function startPolling(){
+stopPolling();
+
+pollingTimer=setInterval(()=>{
+if(!$('panel').hidden){
+loadOrders(true);
+}
+},5000);
+}
+
+function stopPolling(){
+if(pollingTimer){
+clearInterval(pollingTimer);
+pollingTimer=null;
+}
+}
+
 /* DASHBOARD */
 function renderStats(){
 
-const total = orderData.length;
-const pending = orderData.filter(o=>o.status==='pending').length;
-const acceptedOrders = orderData.filter(o=>o.status==='accepted');
-const rejected = orderData.filter(o=>o.status==='rejected').length;
+const total=orderData.length;
+const pending=orderData.filter(o=>o.status==='pending').length;
+const acceptedOrders=orderData.filter(o=>o.status==='accepted');
+const rejected=orderData.filter(o=>o.status==='rejected').length;
 
-const products = Object.keys(stockData).length;
-const totalStock = Object.values(stockData).reduce(
-(sum,v)=>sum+(Number(v)||0),0
-);
-
-const omzet = acceptedOrders.reduce(
-(sum,o)=>sum+(Number(o.total)||0),0
-);
+const products=Object.keys(stockData).length;
+const totalStock=Object.values(stockData).reduce((sum,v)=>sum+(Number(v)||0),0);
+const omzet=acceptedOrders.reduce((sum,o)=>sum+(Number(o.total)||0),0);
 
 $('statTotal').textContent=total;
 $('statPending').textContent=pending;
@@ -328,19 +323,11 @@ if(!sales.length){
 $('salesChart').textContent='Belum ada penjualan yang berhasil.';
 }else{
 const maxSales=Math.max(...sales.map(x=>x[1]));
-
 $('salesChart').innerHTML=sales.slice(0,10).map(([name,quantity])=>{
 const width=Math.max(3,quantity/maxSales*100);
-
-return `
-<div class="sales-row">
-<div class="sales-info">
-<b>${esc(name)}</b>
-<span>${quantity} unit</span>
-</div>
-<div class="sales-track">
-<div class="sales-bar" style="width:${width}%"></div>
-</div>
+return `<div class="sales-row">
+<div class="sales-info"><b>${esc(name)}</b><span>${quantity} unit</span></div>
+<div class="sales-track"><div class="sales-bar" style="width:${width}%"></div></div>
 </div>`;
 }).join('');
 }
@@ -356,20 +343,19 @@ const now=new Date();
 
 const today=accepted.filter(o=>{
 const d=getOrderDate(o);
-return d && sameDay(d,now);
+return d&&sameDay(d,now);
 });
 
 const weekStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()-6);
 
 const week=accepted.filter(o=>{
 const d=getOrderDate(o);
-return d && d>=weekStart && d<=now;
+return d&&d>=weekStart&&d<=now;
 });
 
 const month=accepted.filter(o=>{
 const d=getOrderDate(o);
-return d && d.getFullYear()===now.getFullYear() &&
-d.getMonth()===now.getMonth();
+return d&&d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();
 });
 
 const sum=arr=>arr.reduce((n,o)=>n+(Number(o.total)||0),0);
@@ -389,9 +375,7 @@ return (getOrderDate(b)?.getTime()||0)-(getOrderDate(a)?.getTime()||0);
 $('reportOrders').innerHTML=sorted.slice(0,20).map(o=>{
 const d=getOrderDate(o);
 const dateText=d?d.toLocaleString('id-ID'):'Tanggal tidak tersedia';
-
-return `
-<div class="report-order">
+return `<div class="report-order">
 <b>${esc(o.id)} — ${esc(o.product)}</b>
 <div>${Number(o.quantity)||0} unit | ${rupiah(o.total)}</div>
 <div class="muted">${esc(dateText)} | ${esc(o.name||'-')}</div>
@@ -409,16 +393,11 @@ alert('Belum ada transaksi berhasil untuk diunduh.');
 return;
 }
 
-const rows=[
-['ID Pesanan','Produk','Item','Jumlah','Pembayaran','Total','Nama Pembeli','WhatsApp','Tanggal Pesanan','Status']
-];
+const rows=[['ID Pesanan','Produk','Item','Jumlah','Pembayaran','Total','Nama Pembeli','WhatsApp','Tanggal Pesanan','Status']];
 
 accepted.forEach(o=>{
 const d=getOrderDate(o);
-rows.push([
-o.id,o.product,o.item,o.quantity,o.payment,o.total,
-o.name,o.whatsapp,d?d.toISOString():'',o.status
-]);
+rows.push([o.id,o.product,o.item,o.quantity,o.payment,o.total,o.name,o.whatsapp,d?d.toISOString():'',o.status]);
 });
 
 const csv=rows.map(row=>row.map(value=>{
@@ -443,6 +422,12 @@ $('loginForm').addEventListener('submit',async function(e){
 
 e.preventDefault();
 
+startAudio();
+
+if('Notification' in window && Notification.permission==='default'){
+Notification.requestPermission().catch(()=>{});
+}
+
 const btn=$('loginBtn');
 btn.disabled=true;
 $('msg').textContent='Sedang masuk...';
@@ -457,22 +442,22 @@ body:JSON.stringify({password:$('pw').value})
 
 const j=await r.json();
 
-if(!r.ok) throw new Error(j.error||'Login gagal');
+if(!r.ok)throw new Error(j.error||'Login gagal');
 
 $('login').hidden=true;
 $('panel').hidden=false;
 $('msg').textContent='';
 
+knownOrderIds=null;
+
 await Promise.all([loadStock(),loadOrders()]);
 
+startPolling();
+
 }catch(err){
-
 $('msg').textContent=err.message||'Koneksi gagal';
-
 }finally{
-
 btn.disabled=false;
-
 }
 });
 
@@ -488,6 +473,9 @@ const j=await r.json();
 
 if(!r.ok)throw new Error(j.error||'Logout gagal');
 
+stopPolling();
+knownOrderIds=null;
+
 $('panel').hidden=true;
 $('login').hidden=false;
 $('pw').value='';
@@ -500,13 +488,10 @@ orderData=[];
 $('orderSearch').value='';
 
 renderStats();
-
 alert('Berhasil logout.');
 
 }catch(err){
-
 alert(err.message);
-
 }
 }
 
@@ -523,26 +508,21 @@ const j=await r.json();
 if(!r.ok)throw new Error(j.error||'Gagal memuat stok');
 
 stockData=j.stock||{};
-
 const products=Object.keys(stockData);
 
 $('stockList').innerHTML=products.map(name=>`
 <div class="stock-row">
 <span>${esc(name)}</span>
 <span class="stock-number">${Number(stockData[name])} unit</span>
-</div>
-`).join('')||'<p>Belum ada produk.</p>';
+</div>`).join('')||'<p>Belum ada produk.</p>';
 
 $('stockProduct').innerHTML=products.map(name=>
-`<option value="${esc(name)}">${esc(name)}</option>`
-).join('');
+`<option value="${esc(name)}">${esc(name)}</option>`).join('');
 
 renderStats();
 
 }catch(err){
-
 $('stockList').textContent=err.message;
-
 }
 }
 
@@ -556,10 +536,8 @@ const amount=Number(amountText);
 const mode=$('stockMode').value;
 
 if(!product||amountText===''||!Number.isInteger(amount)||amount<0){
-
 $('stockMsg').textContent='Masukkan jumlah stok berupa bilangan bulat 0 atau lebih.';
 return;
-
 }
 
 let newStock=amount;
@@ -569,10 +547,8 @@ if(mode==='add')newStock=current+amount;
 if(mode==='subtract')newStock=current-amount;
 
 if(newStock<0||newStock>100000){
-
 $('stockMsg').textContent='Jumlah stok harus antara 0 sampai 100000.';
 return;
-
 }
 
 btn.disabled=true;
@@ -592,24 +568,19 @@ if(!r.ok)throw new Error(j.error||'Gagal menyimpan stok');
 
 $('stockMsg').textContent='Stok berhasil diperbarui: '+product+' = '+newStock;
 $('stockAmount').value='';
-
 await loadStock();
 
 }catch(err){
-
 $('stockMsg').textContent=err.message;
-
 }finally{
-
 btn.disabled=false;
-
 }
 }
 
-/* MUAT PESANAN */
-async function loadOrders(){
+/* MUAT PESANAN DAN CEK PESANAN BARU */
+async function loadOrders(fromPolling=false){
 
-$('orders').textContent='Memuat pesanan...';
+if(!fromPolling)$('orders').textContent='Memuat pesanan...';
 
 try{
 
@@ -618,24 +589,38 @@ const j=await r.json();
 
 if(!r.ok)throw new Error(j.error||'Gagal memuat pesanan');
 
-orderData=j.orders||[];
+const newOrders=j.orders||[];
+
+if(knownOrderIds===null){
+knownOrderIds=new Set(newOrders.map(o=>String(o.id)));
+}else{
+
+const freshOrders=newOrders.filter(o=>
+!knownOrderIds.has(String(o.id))&&o.status==='pending'
+);
+
+newOrders.forEach(o=>knownOrderIds.add(String(o.id)));
+
+freshOrders.forEach(notifyNewOrder);
+}
+
+orderData=newOrders;
 
 renderOrders();
 renderStats();
 
 }catch(err){
 
+if(!fromPolling){
 $('orders').textContent=err.message;
-
+}
 }
 }
 
 /* FILTER PESANAN */
 function setFilter(filter){
-
 orderFilter=filter;
 renderOrders();
-
 }
 
 /* PENCARIAN DAN TAMPILKAN PESANAN */
@@ -647,40 +632,23 @@ const filtered=orderData.filter(o=>{
 
 const statusMatch=orderFilter==='all'||o.status===orderFilter;
 
-const searchText=[
-o.id,
-o.name,
-o.product,
-o.whatsapp
-].join(' ').toLowerCase();
+const searchText=[o.id,o.name,o.product,o.whatsapp].join(' ').toLowerCase();
 
-return statusMatch && searchText.includes(keyword);
-
+return statusMatch&&searchText.includes(keyword);
 });
 
 $('orders').innerHTML=filtered.map(o=>`
-
 <div class="card">
-
 <b>${esc(o.id)} — ${esc(o.product)}</b>
-
 <p>${esc(o.item)} × ${Number(o.quantity)} | ${esc(o.payment)}</p>
-
 <p>Total: ${rupiah(o.total)}</p>
-
 <p>Pembeli: ${esc(o.name)} | WA: ${esc(o.whatsapp)}</p>
-
 <p>Status: <b class="status">${esc(o.status)}</b></p>
-
 ${o.status==='pending'?`
 <button class="ok" data-id="${esc(o.id)}" data-action="accept">TERIMA PESANAN</button>
 <button class="no" data-id="${esc(o.id)}" data-action="reject">TOLAK PESANAN</button>
 `:''}
-
-</div>
-
-`).join('')||'<p class="muted">Pesanan tidak ditemukan.</p>';
-
+</div>`).join('')||'<p class="muted">Pesanan tidak ditemukan.</p>';
 }
 
 /* KETIKA MENGETIK PENCARIAN */
@@ -690,19 +658,15 @@ $('orderSearch').addEventListener('input',renderOrders);
 $('orders').addEventListener('click',function(e){
 
 const btn=e.target.closest('button[data-action]');
-
 if(!btn)return;
 
 decide(btn.dataset.id,btn.dataset.action);
-
 });
 
 /* PROSES PESANAN */
 async function decide(id,action){
 
-const question=action==='accept'
-?'Terima pesanan dan kurangi stok?'
-:'Tolak pesanan?';
+const question=action==='accept'?'Terima pesanan dan kurangi stok?':'Tolak pesanan?';
 
 if(!confirm(question))return;
 
@@ -723,15 +687,12 @@ alert(j.error||'Berhasil diproses');
 await Promise.all([loadOrders(),loadStock()]);
 
 }catch(err){
-
 alert(err.message);
-
 }
 }
 
 /* AMANKAN TEKS */
 function esc(s){
-
 return String(s??'').replace(/[&<>"']/g,c=>({
 '&':'&amp;',
 '<':'&lt;',
@@ -739,7 +700,6 @@ return String(s??'').replace(/[&<>"']/g,c=>({
 '"':'&quot;',
 "'":'&#39;'
 }[c]));
-
 }
 </script>
 
