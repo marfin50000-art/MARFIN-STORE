@@ -19,6 +19,7 @@ button:disabled{opacity:.5}
 .ok{background:#176b49}
 .no{background:#8b2945}
 .primary{background:#6336a5}
+.logout{background:#8b2945;float:right}
 .muted{color:#b9a9d5}
 #msg{color:#ff9ab0}
 .stock-row{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #3a2766;padding:12px 0}
@@ -27,6 +28,7 @@ button:disabled{opacity:.5}
 .tabs button{font-size:13px}
 .status{color:#d5b5ff}
 .small{font-size:13px}
+.clear{clear:both}
 </style>
 </head>
 <body>
@@ -43,6 +45,13 @@ button:disabled{opacity:.5}
 </section>
 
 <section id="panel" hidden>
+
+<div class="card">
+<button class="logout" onclick="logout()">LOGOUT</button>
+<h2>ADMIN PANEL</h2>
+<p class="muted small">Kelola sistem MARFIN STORE.</p>
+<div class="clear"></div>
+</div>
 
 <div class="card">
 <h2>📦 KELOLA STOK</h2>
@@ -119,6 +128,28 @@ $('loginForm').addEventListener('submit', async function(e){
     btn.disabled = false;
   }
 });
+
+async function logout(){
+  if(!confirm('Yakin ingin keluar dari admin?')) return;
+
+  try {
+    const r = await fetch('/api/admin/logout',{method:'POST'});
+    const j = await r.json();
+    if(!r.ok) throw new Error(j.error || 'Logout gagal');
+
+    $('panel').hidden = true;
+    $('login').hidden = false;
+    $('pw').value = '';
+    $('stockList').textContent = '';
+    $('orders').textContent = '';
+    stockData = {};
+    orderData = [];
+
+    alert('Berhasil logout.');
+  } catch(err) {
+    alert(err.message);
+  }
+}
 
 async function loadStock(){
   $('stockList').textContent = 'Memuat stok...';
@@ -275,4 +306,4 @@ function esc(s){
 }
 </script>
 </body>
-  </html>
+</html>
